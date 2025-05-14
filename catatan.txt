@@ -1,0 +1,114 @@
+=== DETAIL APLIKASI ===
+- Ketika pengguna melakukan pesanan, pesanan dibuat bersama dengan pembayaran
+- ketika pembayaran dibuat, tanggal otomatis null(default) dan total_bayar otomatis 0(default)
+- ketika melakukan pembayaran, pembayaran bisa dicicil dan nominal total disimpan di total_bayar
+- tanggal_pembayaran diupdate ketika total_bayar sesuai dengan total_harga pada pesanan(sudah lunas) 
+
+
+=== DATABASE SQL ===
+CREATE DATABASE traveliki;
+
+-- CREATE TABLE
+CREATE TABLE pengguna (
+	id_pengguna int(11) NOT NULL,
+    username varchar(100) NOT NULL,
+    email varchar(100) NOT NULL,
+    `password` varchar(100) NOT NULL,
+    role ENUM('ADMIN','EMPLOYEE','CUSTOMER') NOT NULL
+);
+
+CREATE TABLE layanan (
+    id_layanan int(11) NOT NULL,
+    nama_layanan varchar(100) NOT NULL,
+    deskripsi_layanan text DEFAULT NULL,
+    harga decimal(10,2) NOT NULL,
+    id_kategori int(11) NOT NULL,
+    status_layanan enum('ACTIVE','INACTIVE') DEFAULT 'INACTIVE'
+);
+
+CREATE TABLE kategori (
+    id_kategori int(11) NOT NULL,
+    nama_kategori varchar(100) NOT NULL
+);
+
+CREATE TABLE pesanan (
+    id_pesanan int(11) NOT NULL,
+    id_pengguna int(11) NOT NULL,
+    tanggal_pesanan DATETIME NOT NULL,
+    total_harga decimal(10,2) NOT NULL,
+    status_pemesanan enum('PENDING','CANCELLED','COMPLETED') DEFAULT 'PENDING'
+);
+
+CREATE TABLE pembayaran (
+    id_pembayaran int(11) NOT NULL,
+    id_pesanan int(11) NOT NULL,
+    tanggal_pembayaran DATETIME DEFAULT NULL,
+    total_bayar decimal(10,2) DEFAULT 0,
+    status_pembayaran enum('PENDING','PAID','FAILED') DEFAULT 'PENDING'
+);
+
+CREATE TABLE detail_pesanan (
+    id_detail_pesanan int(11) NOT NULL,
+    id_pesanan int(11) NOT NULL,
+    id_layanan int(11) NOT NULL,
+    jumlah int(11) NOT NULL,
+    sub_total decimal(10,2) NOT NULL
+);
+
+-- INDEXES TABLE
+ALTER TABLE pengguna
+	ADD PRIMARY KEY (id_pengguna),
+    ADD UNIQUE KEY `email` (`email`);
+    
+ALTER TABLE layanan 
+	ADD PRIMARY KEY (`id_layanan`),
+    ADD KEY `id_kategori` (`id_kategori`);
+
+ALTER TABLE kategori
+	ADD PRIMARY KEY (`id_kategori`);
+    
+ALTER TABLE pesanan
+	ADD PRIMARY KEY (`id_pesanan`),
+    ADD KEY `id_pengguna` (`id_pengguna`);
+    
+ALTER TABLE pembayaran
+	ADD PRIMARY KEY (`id_pembayaran`),
+    ADD KEY `id_pesanan` (`id_pesanan`);
+    
+ALTER TABLE detail_pesanan
+	ADD PRIMARY KEY (`id_detail_pesanan`),
+    ADD KEY `id_layanan` (`id_layanan`),
+    ADD KEY `id_pesanan` (`id_pesanan`);
+    
+-- ADD AUTO_INCREMENT
+ALTER TABLE pengguna
+	MODIFY `id_pengguna` int(11) NOT NULL AUTO_INCREMENT;
+    
+ALTER TABLE layanan
+	MODIFY `id_layanan` int(11) NOT NULL AUTO_INCREMENT;
+    
+ALTER TABLE kategori
+	MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT;
+    
+ALTER TABLE pesanan
+	MODIFY `id_pesanan` int(11) NOT NULL AUTO_INCREMENT;
+    
+ALTER TABLE pembayaran
+	MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT;
+    
+ALTER TABLE detail_pesanan
+	MODIFY `id_detail_pesanan` int(11) NOT NULL AUTO_INCREMENT;
+    
+-- ADD CONSTRAINT    
+ALTER TABLE layanan
+	ADD CONSTRAINT `id_kategori` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`);
+    
+ALTER TABLE pesanan
+	ADD CONSTRAINT `id_pengguna` FOREIGN KEY (`id_pengguna`) REFERENCES `pengguna` (`id_pengguna`);
+    
+ALTER TABLE pembayaran
+	ADD CONSTRAINT `id_pesanan` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id_pesanan`);
+    
+ALTER TABLE detail_pesanan
+	ADD CONSTRAINT `id_detail_pesanan` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id_pesanan`),
+    ADD CONSTRAINT `id_detail_layanan` FOREIGN KEY (`id_layanan`) REFERENCES `layanan` (`id_layanan`);
