@@ -19,80 +19,23 @@ public class PenggunaController {
     }
 
     public List<Pengguna> getAll() {
-        // Validasi input
-        if (penggunaService.getAll() == null || penggunaService.getAll().isEmpty()) {
-            throw new IllegalArgumentException("[ Tidak ada pengguna yang ditemukan ]");
-        }
-
-        return penggunaService.getAll();
+        // berfungsi untuk menampilkan semua pengguna
     }
 
     public Pengguna getById(int id) {
-        // Validasi input
-        if (id <= 0) {
-            throw new IllegalArgumentException("[ ID tidak valid ]");
-        }
-
-        return penggunaService.getById(id);
+        // berfungsi untuk menampilkan pengguna berdasarkan id
     }
 
     public Pengguna getByUsername(String username) {
-        // Validasi input
-        if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("[ Username tidak boleh kosong ]");
-        }
-        
-        return penggunaService.getByUsername(username);
+        // berfungsi untuk menampilkan pengguna berdasarkan username
     }
 
     public List<Pengguna> getByRole(String role) {
-        return penggunaService.getByRole(role);
+        // berfungsi untuk menampilkan pengguna berdasarkan role
     }
 
     public void createPengguna(String username, String email, String password, String role) {
-        // Validasi input
-        if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("[ Username tidak boleh kosong ]");
-        }
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("[ Email tidak boleh kosong ]");
-        }
-        if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("[ Password tidak boleh kosong ]");
-        }
-        if (role == null || role.isEmpty()) {
-            throw new IllegalArgumentException("[ Role tidak boleh kosong ]");
-        }
-        if (!role.toUpperCase().equals(UserRole.ADMIN.toString())
-                && !role.toUpperCase().equals(UserRole.CUSTOMER.toString())
-                && !role.toUpperCase().equals(UserRole.EMPLOYEE.toString())) {
-            throw new IllegalArgumentException("[ Role tidak valid ]");
-        }
-
-        // Cek apakah pengguna sudah ada
-        if (penggunaService.getByUsername(username) != null) {
-            throw new IllegalArgumentException("Username sudah ada");
-        }
-        if (penggunaService.getByUsername(email) != null) {
-            throw new IllegalArgumentException("Email sudah ada");
-        }
-        
-        // Buat pengguna baru
-        Pengguna pengguna = new Pengguna(0, username, email, password, UserRole.valueOf(role.toUpperCase()));
-        
-        // Simpan pengguna ke database
-        penggunaService.create(pengguna);
-        
-        // Tampilkan pesan sukses
-        System.out.println("Pengguna berhasil dibuat");
-
-        // Tampilkan detail pengguna
-        System.out.println("ID: " + pengguna.getId());
-        System.out.println("Username: " + pengguna.getUsername());
-        System.out.println("Email: " + pengguna.getEmail());
-        System.out.println("Role: " + pengguna.getRole());
-        System.out.println("Password: " + pengguna.getPassword());
-        System.out.println("====================================");
+        // berfungsi untuk menambahkan pengguna baru
     }
 
     public void updatePengguna(int id, String username, String email, String password, String role) {

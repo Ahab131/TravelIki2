@@ -130,6 +130,46 @@ public class PenggunaDAO {
         return pengguna;
     }
 
+    public Pengguna getByEmail(String email) {
+        Pengguna pengguna = null;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getInstance().getConnection();
+            String sql = "SELECT * FROM pengguna WHERE email = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String username = resultSet.getString("username");
+                String password = resultSet.getString("password");
+                String roleString = resultSet.getString("role");
+                UserRole role = UserRole.valueOf(roleString.toUpperCase());
+
+                pengguna = new Pengguna(id, username, email, password, role);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return pengguna;
+    }
+
     public List<Pengguna> getByRole(String role) {
         List<Pengguna> penggunaList = new ArrayList<>();
 

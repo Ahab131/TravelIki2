@@ -5,7 +5,6 @@ public class App {
         app.showSplashScreen();
     }
     
-
     // Splash screen
     public void showSplashScreen() {
         System.out.println("Welcome to the Application!");
