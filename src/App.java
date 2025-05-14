@@ -4,6 +4,7 @@ public class App {
         App app = new App();
         app.showSplashScreen();
     }
+    
 
     // Splash screen
     public void showSplashScreen() {
