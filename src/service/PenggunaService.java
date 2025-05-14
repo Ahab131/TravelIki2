@@ -6,10 +6,6 @@ import dao.PenggunaDAO;
 import model.Pengguna;
 import enums.UserRole;
 
-// service berisikan logika bisnis dan berfungsi sebagai jembatan antara controller dan DAO
-// service tidak berinteraksi langsung dengan database
-// service berfungsi untuk memisahkan logika bisnis dari logika akses data
-
 public class PenggunaService {
     private final PenggunaDAO penggunaDAO;
 

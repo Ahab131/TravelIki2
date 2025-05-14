@@ -98,6 +98,50 @@ public class LayananDAO {
         return layanan;
     }
 
+    public Layanan getByNama(String nama) {
+        Layanan layanan = null;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getInstance().getConnection();
+            String sql = "SELECT * FROM layanan WHERE nama = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, nama);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String deskripsi = resultSet.getString("deskripsi");
+                double harga = resultSet.getDouble("harga");
+                int idKategori = resultSet.getInt("id_kategori");
+                String statusString = resultSet.getString("status");
+                LayananStatus status = LayananStatus.valueOf(statusString.toUpperCase());
+
+                layanan = new Layanan(id, nama, deskripsi, harga, idKategori, status);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (connection != null)
+                    connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return layanan;
+    }
+
     public List<Layanan> getByKategori(int idKategori) {
         List<Layanan> layananList = new ArrayList<>();
 
