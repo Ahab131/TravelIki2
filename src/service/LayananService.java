@@ -8,10 +8,11 @@ import enums.LayananStatus;
 
 public class LayananService {
     private final LayananDAO layananDAO;
-    private final KategoriDAO kategoriDAO;
+    private final KategoriService kategoriService;
 
-    public LayananService(LayananDAO layananDAO) {
+    public LayananService(LayananDAO layananDAO, KategoriService kategoriService) {
         this.layananDAO = layananDAO;
+        this.kategoriService = kategoriService;
     }
 
     public List<Layanan> getAll() {
@@ -63,7 +64,7 @@ public class LayananService {
             throw new IllegalArgumentException("[ Kategori tidak boleh kosong ]");
         }
 
-        List<Layanan> layananList = layananDAO.getByKategori(kategori); // Kategori diambil dari id kategori
+        List<Layanan> layananList = layananDAO.getByKategori(kategoriService.getByNama(kategori)); // Kategori diambil dari id kategori
         if (layananList.isEmpty()) {
             throw new IllegalArgumentException("[ Tidak ada layanan dengan kategori " + kategori + " ]");
         }
@@ -92,7 +93,7 @@ public class LayananService {
 
     public void create(String nama, String deskripsi, double harga, int idKategori, String status) {
         // Validasi input
-        validateInput(nama, kategoriDAO.getById(idKategori).getNama(), status);
+        validateInput(nama, kategoriService.getById(idKategori).getNama(), status);
         validateDuplicate(nama);
 
         Layanan layanan = new Layanan(0, nama, deskripsi, harga, idKategori, LayananStatus.valueOf(status));
@@ -101,7 +102,7 @@ public class LayananService {
 
     public void update(int id, String nama, String deskripsi, double harga, int idKategori, String status) {
         // Validasi input
-        validateInput(nama, kategoriDAO.getById(idKategori).getNama(), status);
+        validateInput(nama, kategoriService.getById(idKategori).getNama(), status);
 
         Layanan layanan = new Layanan(id, nama, deskripsi, harga, idKategori, LayananStatus.valueOf(status));
         layananDAO.update(layanan);

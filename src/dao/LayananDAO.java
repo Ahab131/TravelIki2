@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 
+import model.Kategori;
 import model.Layanan;
 import config.Database;
 import enums.LayananStatus;
@@ -142,12 +143,14 @@ public class LayananDAO {
         return layanan;
     }
 
-    public List<Layanan> getByKategori(int idKategori) {
+    public List<Layanan> getByKategori(Kategori kategori) {
         List<Layanan> layananList = new ArrayList<>();
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+
+        int idKategori = kategori.getId();
 
         try {
             connection = Database.getInstance().getConnection();

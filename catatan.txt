@@ -20,6 +20,8 @@
     Menampilkan dialog baru.
     
 - JFrame dan komponen-komponen di dalamnya akan diperbarui sesuai dengan instruksi dari Controller
+- Controller untuk validasi format dan sintaks dasar\
+- Service untuk validasi logika bisnis dan semantik yang lebih mendalam
 
 MSG   : "Ki, sesuai catetanku dek duwur iku, engko component, actionEvent, dan listener e dekek dek view.
         Controller e engko sesuai iku, ambil data dari view dan memperbarui view."
