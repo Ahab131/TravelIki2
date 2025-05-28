@@ -27,8 +27,8 @@ public class KategoriService {
         return kategoriList;
     }
 
-    public Kategori getKategori(Kategori giveKategori) {
-        Kategori kategori = kategoriDAO.getById(giveKategori.getId());
+    public Kategori getById(int id) {
+        Kategori kategori = kategoriDAO.getById(id);
         if (kategori == null) {
             throw new IllegalArgumentException("[ Kategori tidak ditemukan ]");
         }
