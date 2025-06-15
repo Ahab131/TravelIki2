@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Database {
     // Konstanta untuk koneksi database
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String DB_URL = "jdbc:mysql://Localhost:3306/traveliku"; // Ganti dengan "traveliki"
+    private static final String DB_URL = "jdbc:mysql://Localhost:3306/traveliki"; // Ganti dengan "traveliki"
     private static final String USER = "root";
     private static final String PASS = "";  
 

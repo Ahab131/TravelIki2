@@ -12,6 +12,12 @@ public class AuthService {
         this.penggunaRepository = new PenggunaRepository(); // Inisialisasi UserRepository
     }
 
+    // public static void main(String[] args) {
+    //     AuthService authService = new AuthService();
+    //     UserRole role = authService.authenticateUser("admin", "admin123");
+    //     System.out.println("Authenticated role: " + (role != null ? role : "Authentication failed"));
+    // }
+
     // Logika bisnis untuk autentikasi pengguna
     public UserRole authenticateUser(String username, String password) {
         // Validasi lebih lanjut di Service (misal: format username/password, kebijakan keamanan)

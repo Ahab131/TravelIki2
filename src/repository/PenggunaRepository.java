@@ -10,11 +10,11 @@ import enums.UserRole;
 
 public class PenggunaRepository {
 
-    // public static void main(String[] args) {
-    //     PenggunaDAO penggunaDAO = new PenggunaDAO();
-
-    //     penggunaDAO.getAll().forEach(System.out::println);
-    // }
+    public static void main(String[] args) {
+        PenggunaRepository repository = new PenggunaRepository();
+        Pengguna user = repository.getByUsername("admin");
+        System.out.println(user.getRole());
+    }
 
     public List<Pengguna> getAll() {
         List<Pengguna> penggunaList = new ArrayList<>();
@@ -66,7 +66,7 @@ public class PenggunaRepository {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pengguna WHERE id = ?";
+            String sql = "SELECT * FROM pengguna WHERE id_pengguna = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
@@ -112,7 +112,7 @@ public class PenggunaRepository {
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                int id = resultSet.getInt("id");
+                int id = resultSet.getInt("id_pengguna");
                 String email = resultSet.getString("email");
                 String password = resultSet.getString("password");
                 String roleString = resultSet.getString("role");
