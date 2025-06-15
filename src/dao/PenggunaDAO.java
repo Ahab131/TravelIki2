@@ -9,6 +9,13 @@ import config.Database;
 import enums.UserRole;
 
 public class PenggunaDAO {
+
+    // public static void main(String[] args) {
+    //     PenggunaDAO penggunaDAO = new PenggunaDAO();
+
+    //     penggunaDAO.getAll().forEach(System.out::println);
+    // }
+
     public List<Pengguna> getAll() {
         List<Pengguna> penggunaList = new ArrayList<>();
 
@@ -23,7 +30,7 @@ public class PenggunaDAO {
             resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
+                int id = resultSet.getInt("id_pengguna");
                 String username = resultSet.getString("username");
                 String email = resultSet.getString("email");
                 String password = resultSet.getString("password");
@@ -107,6 +114,46 @@ public class PenggunaDAO {
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String email = resultSet.getString("email");
+                String password = resultSet.getString("password");
+                String roleString = resultSet.getString("role");
+                UserRole role = UserRole.valueOf(roleString.toUpperCase());
+
+                pengguna = new Pengguna(id, username, email, password, role);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return pengguna;
+    }
+
+    public Pengguna getByEmail(String email) {
+        Pengguna pengguna = null;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getInstance().getConnection();
+            String sql = "SELECT * FROM pengguna WHERE email = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String username = resultSet.getString("username");
                 String password = resultSet.getString("password");
                 String roleString = resultSet.getString("role");
                 UserRole role = UserRole.valueOf(roleString.toUpperCase());

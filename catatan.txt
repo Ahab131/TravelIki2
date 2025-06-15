@@ -2,8 +2,29 @@
 - Ketika pengguna melakukan pesanan, pesanan dibuat bersama dengan pembayaran
 - ketika pembayaran dibuat, tanggal otomatis null(default) dan total_bayar otomatis 0(default)
 - ketika melakukan pembayaran, pembayaran bisa dicicil dan nominal total disimpan di total_bayar
-- tanggal_pembayaran diupdate ketika total_bayar sesuai dengan total_harga pada pesanan(sudah lunas) 
+- tanggal_pembayaran diupdate ketika total_bayar sesuai dengan total_harga pada pesanan(sudah lunas)
 
+- view berisi tombol, text field, list, dan lain-lain. 
+- view juga berisi tindakan pengguna yang menghasilkan event (misalnya, klik tombol, perubahan teks). 
+- view memiliki listener yang terhubung ke Controller. 
+- ketika terjadi actionEvent, listener akan memanggil method yang sesuai di Controller.
+
+- Controller meminta data dari Model melalui Service (jika diperlukan untuk menampilkan informasi baru).
+- Memanggil method pada Service untuk melakukan logika bisnis sebagai respons terhadap aksi pengguna
+- Controller Berinteraksi dengan Service (Service)
+- Controller menerima hasil dari Service
+- lalu memperbarui View (JFrame) agar mencerminkan perubahan data atau hasil dari tindakan pengguna
+    Mengubah teks pada label.
+    Memperbarui data dalam tabel atau list.
+    Mengaktifkan atau menonaktifkan komponen.
+    Menampilkan dialog baru.
+    
+- JFrame dan komponen-komponen di dalamnya akan diperbarui sesuai dengan instruksi dari Controller
+- Controller untuk validasi format dan sintaks dasar\
+- Service untuk validasi logika bisnis dan semantik yang lebih mendalam
+
+MSG   : "Ki, sesuai catetanku dek duwur iku, engko component, actionEvent, dan listener e dekek dek view.
+        Controller e engko sesuai iku, ambil data dari view dan memperbarui view."
 
 === DATABASE SQL ===
 CREATE DATABASE traveliki;
