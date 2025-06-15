@@ -9,7 +9,7 @@ public class Database {
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://Localhost:3306/traveliku"; // Ganti dengan "traveliki"
     private static final String USER = "root";
-    private static final String PASS = "";
+    private static final String PASS = "";  
 
     private static Database instance;
 

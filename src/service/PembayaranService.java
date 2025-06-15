@@ -4,10 +4,13 @@ import java.util.List;
 import java.sql.Date;
 
 import dao.PembayaranDAO;
+import model.DetailPesanan;
 import model.Pembayaran;
 import enums.PembayaranStatus;
+// import service.DetailPesananService;
 
 public class PembayaranService {
+    private DetailPesananService detailPesananService;
     private final PembayaranDAO pembayaranDAO;
 
     public PembayaranService(PembayaranDAO pembayaranDAO) {
@@ -64,6 +67,19 @@ public class PembayaranService {
         }
 
         return pembayaranList;
+    }
+
+    public double getTotalPembayaran(int idPesanan) {
+        if(detailPesananService.getByIdPesanan(idPesanan) == null) {
+            throw new IllegalArgumentException("[ Detail Pesanan tidak ditemukan untuk ID Pesanan ini ]");
+        } else {
+            List<DetailPesanan> detailPesananList = detailPesananService.getByIdPesanan(idPesanan);
+            double total = 0;
+            for (DetailPesanan detail : detailPesananList) {
+                total += detail.getSubtotal() * detail.getKuantitas();
+            }
+            return total;
+        }
     }
 
     public void create(int idPesanan, double total, double bayar, Date tanggalPembayaran, PembayaranStatus status) {

@@ -9,6 +9,13 @@ import config.Database;
 import enums.UserRole;
 
 public class PenggunaDAO {
+
+    // public static void main(String[] args) {
+    //     PenggunaDAO penggunaDAO = new PenggunaDAO();
+
+    //     penggunaDAO.getAll().forEach(System.out::println);
+    // }
+
     public List<Pengguna> getAll() {
         List<Pengguna> penggunaList = new ArrayList<>();
 
@@ -23,7 +30,7 @@ public class PenggunaDAO {
             resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
+                int id = resultSet.getInt("id_pengguna");
                 String username = resultSet.getString("username");
                 String email = resultSet.getString("email");
                 String password = resultSet.getString("password");
