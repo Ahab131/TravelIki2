@@ -1,15 +1,15 @@
-package dao;
+package repository;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 
-import model.Kategori;
+import model.DetailPesanan;
 import config.Database;
 
-public class KategoriDAO {
-    public List<Kategori> getAll() {
-        List<Kategori> kategoriList = new ArrayList<>();
+public class DetailPesananDAO {
+    public List<DetailPesanan> getAll() {
+        List<DetailPesanan> detailPesananList = new ArrayList<>();
 
         Connection connection = null;
         Statement statement = null;
@@ -18,15 +18,19 @@ public class KategoriDAO {
         try {
             connection = Database.getInstance().getConnection();
             statement = connection.createStatement();
-            String sql = "SELECT * FROM kategori";
+            String sql = "SELECT * FROM detail_pesanan";
             resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String nama = resultSet.getString("nama");
+                int idDetailPesanan = resultSet.getInt("id_detail_pesanan");
+                int idPesanan = resultSet.getInt("id_pesanan");
+                int idLayanan = resultSet.getInt("id_layanan");
+                int kuantitas = resultSet.getInt("kuantitas");
+                double subtotal = resultSet.getDouble("subtotal");
 
-                Kategori kategori = new Kategori(id, nama);
-                kategoriList.add(kategori);
+                DetailPesanan detailPesanan = new DetailPesanan(idDetailPesanan, idPesanan, idLayanan, kuantitas,
+                        subtotal);
+                detailPesananList.add(detailPesanan);
             }
 
         } catch (SQLException e) {
@@ -46,11 +50,11 @@ public class KategoriDAO {
             }
         }
 
-        return kategoriList;
+        return detailPesananList;
     }
 
-    public Kategori getById(int id) {
-        Kategori kategori = null;
+    public DetailPesanan getById(int id) {
+        DetailPesanan detailPesanan = null;
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -58,14 +62,18 @@ public class KategoriDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM kategori WHERE id = ?";
+            String sql = "SELECT * FROM detail_pesanan WHERE id_detail_pesanan = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                String nama = resultSet.getString("nama");
-                kategori = new Kategori(id, nama);
+                int idPesanan = resultSet.getInt("id_pesanan");
+                int idLayanan = resultSet.getInt("id_layanan");
+                int kuantitas = resultSet.getInt("kuantitas");
+                double subtotal = resultSet.getDouble("subtotal");
+
+                detailPesanan = new DetailPesanan(id, idPesanan, idLayanan, kuantitas, subtotal);
             }
 
         } catch (SQLException e) {
@@ -85,28 +93,34 @@ public class KategoriDAO {
             }
         }
 
-        return kategori;
+        return detailPesanan;
     }
 
-    public Kategori getByNama(String nama) {
-        Kategori kategori = null;
+    public List<DetailPesanan> getByIdPesanan(int idPesanan) {
+        List<DetailPesanan> detailPesananList = new ArrayList<>();
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
+
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM kategori WHERE nama = ?";
+            String sql = "SELECT * FROM detail_pesanan WHERE id_pesanan = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, nama);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.setInt(1, idPesanan);
+            resultSet = preparedStatement.executeQuery(sql);
 
-            if (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                kategori = new Kategori(id, nama);
+            while (resultSet.next()) {
+                int idDetailPesanan = resultSet.getInt("id_detail_pesanan");
+                int idLayanan = resultSet.getInt("id_layanan");
+                int kuantitas = resultSet.getInt("kuantitas");
+                double subtotal = resultSet.getDouble("subtotal");
+
+                DetailPesanan detailPesanan = new DetailPesanan(idDetailPesanan, idPesanan, idLayanan, kuantitas,
+                        subtotal);
+                detailPesananList.add(detailPesanan);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
 
@@ -124,18 +138,23 @@ public class KategoriDAO {
             }
         }
 
-        return kategori;
+        return detailPesananList;
     }
 
-    public void create(String nama) {
+    public void create(DetailPesanan detailPesanan) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "INSERT INTO kategori (nama) VALUES (?)";
+            String sql = "INSERT INTO detail_pesanan (id_pesanan, id_layanan, kuantitas, subtotal) VALUES (?, ?, ?, ?)";
+
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, nama);
+            preparedStatement.setInt(1, detailPesanan.getIdPesanan());
+            preparedStatement.setInt(2, detailPesanan.getIdLayanan());
+            preparedStatement.setInt(3, detailPesanan.getKuantitas());
+            preparedStatement.setDouble(4, detailPesanan.getSubtotal());
+
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -154,17 +173,21 @@ public class KategoriDAO {
         }
     }
 
-    // Method untuk mengupdate kategori
-    public void update(int id, String nama) {
+    public void update(DetailPesanan detailPesanan) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "UPDATE kategori SET nama = ? WHERE id = ?";
+            String sql = "UPDATE detail_pesanan SET id_pesanan = ?, id_layanan = ?, kuantitas = ?, subtotal = ? WHERE id_detail_pesanan = ?";
+
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, nama);
-            preparedStatement.setInt(2, id);
+            preparedStatement.setInt(1, detailPesanan.getIdPesanan());
+            preparedStatement.setInt(2, detailPesanan.getIdLayanan());
+            preparedStatement.setInt(3, detailPesanan.getKuantitas());
+            preparedStatement.setDouble(4, detailPesanan.getSubtotal());
+            preparedStatement.setInt(5, detailPesanan.getId());
+
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -183,14 +206,13 @@ public class KategoriDAO {
         }
     }
 
-    // Method untuk menghapus kategori
     public void delete(int id) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "DELETE FROM kategori WHERE id = ?";
+            String sql = "DELETE FROM detail_pesanan WHERE id_detail_pesanan = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

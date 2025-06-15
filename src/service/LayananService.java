@@ -2,8 +2,8 @@ package service;
 
 import java.util.List;
 
-import dao.LayananDAO;
 import model.Layanan;
+import repository.LayananDAO;
 import enums.LayananStatus;
 
 public class LayananService {

@@ -2,8 +2,8 @@ package service;
 
 import java.util.List;
 
-import dao.KategoriDAO;
 import model.Kategori;
+import repository.KategoriDAO;
 
 public class KategoriService {
     private final KategoriDAO kategoriDAO;

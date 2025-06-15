@@ -1,16 +1,15 @@
-package dao;
+package repository;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 
-import model.Pesanan;
+import model.Kategori;
 import config.Database;
-import enums.PesananStatus;
 
-public class PesananDAO {
-    public List<Pesanan> getAll() {
-        List<Pesanan> pesananList = new ArrayList<>();
+public class KategoriDAO {
+    public List<Kategori> getAll() {
+        List<Kategori> kategoriList = new ArrayList<>();
 
         Connection connection = null;
         Statement statement = null;
@@ -19,17 +18,15 @@ public class PesananDAO {
         try {
             connection = Database.getInstance().getConnection();
             statement = connection.createStatement();
-            String sql = "SELECT * FROM pesanan";
+            String sql = "SELECT * FROM kategori";
             resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int idPengguna = resultSet.getInt("id_pengguna");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
+                String nama = resultSet.getString("nama");
 
-                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
-                pesananList.add(pesanan);
+                Kategori kategori = new Kategori(id, nama);
+                kategoriList.add(kategori);
             }
 
         } catch (SQLException e) {
@@ -49,11 +46,11 @@ public class PesananDAO {
             }
         }
 
-        return pesananList;
+        return kategoriList;
     }
 
-    public Pesanan getById(int id) {
-        Pesanan pesanan = null;
+    public Kategori getById(int id) {
+        Kategori kategori = null;
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -61,17 +58,14 @@ public class PesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pesanan WHERE id = ?";
+            String sql = "SELECT * FROM kategori WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                int idPengguna = resultSet.getInt("id_pengguna");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
-
-                pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
+                String nama = resultSet.getString("nama");
+                kategori = new Kategori(id, nama);
             }
 
         } catch (SQLException e) {
@@ -91,11 +85,11 @@ public class PesananDAO {
             }
         }
 
-        return pesanan;
+        return kategori;
     }
 
-    public List<Pesanan> getByIdPengguna(int idPengguna) {
-        List<Pesanan> pesananList = new ArrayList<>();
+    public Kategori getByNama(String nama) {
+        Kategori kategori = null;
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -103,18 +97,14 @@ public class PesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pesanan WHERE id_pengguna = ?";
+            String sql = "SELECT * FROM kategori WHERE nama = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, idPengguna);
+            preparedStatement.setString(1, nama);
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
-
-                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
-                pesananList.add(pesanan);
+                kategori = new Kategori(id, nama);
             }
 
         } catch (SQLException e) {
@@ -134,63 +124,18 @@ public class PesananDAO {
             }
         }
 
-        return pesananList;
+        return kategori;
     }
 
-    public List<Pesanan> getByStatus(PesananStatus status) {
-        List<Pesanan> pesananList = new ArrayList<>();
-
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pesanan WHERE status = ?";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, status.toString());
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                int idPengguna = resultSet.getInt("id_pengguna");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-
-                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
-                pesananList.add(pesanan);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
-                if (preparedStatement != null)
-                    preparedStatement.close();
-                if (connection != null)
-                    connection.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return pesananList;
-    }
-
-    public void create(Pesanan pesanan) {
+    public void create(String nama) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "INSERT INTO pesanan (id_pengguna, tanggal_pesanan, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO kategori (nama) VALUES (?)";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, pesanan.getIdPengguna());
-            preparedStatement.setDate(2, new java.sql.Date(pesanan.getTanggalPesanan().getTime()));
-            preparedStatement.setString(3, pesanan.getStatus().toString());
+            preparedStatement.setString(1, nama);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -209,18 +154,17 @@ public class PesananDAO {
         }
     }
 
-    public void update(Pesanan pesanan) {
+    // Method untuk mengupdate kategori
+    public void update(int id, String nama) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "UPDATE pesanan SET id_pengguna = ?, tanggal_pesanan = ?, status = ? WHERE id = ?";
+            String sql = "UPDATE kategori SET nama = ? WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, pesanan.getIdPengguna());
-            preparedStatement.setDate(2, new java.sql.Date(pesanan.getTanggalPesanan().getTime()));
-            preparedStatement.setString(3, pesanan.getStatus().toString());
-            preparedStatement.setInt(4, pesanan.getId());
+            preparedStatement.setString(1, nama);
+            preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -239,13 +183,14 @@ public class PesananDAO {
         }
     }
 
+    // Method untuk menghapus kategori
     public void delete(int id) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "DELETE FROM pesanan WHERE id = ?";
+            String sql = "DELETE FROM kategori WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

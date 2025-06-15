@@ -2,14 +2,14 @@ package service;
 
 import java.util.List;
 
-import dao.PenggunaDAO;
 import model.Pengguna;
+import repository.PenggunaRepository;
 import enums.UserRole;
 
 public class PenggunaService {
-    private final PenggunaDAO penggunaDAO;
+    private final PenggunaRepository penggunaDAO;
 
-    public PenggunaService(PenggunaDAO penggunaDAO) {
+    public PenggunaService(PenggunaRepository penggunaDAO) {
         this.penggunaDAO = penggunaDAO;
     }
 

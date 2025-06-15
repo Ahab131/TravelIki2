@@ -1,15 +1,16 @@
-package dao;
+package repository;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 
-import model.DetailPesanan;
+import model.Pesanan;
 import config.Database;
+import enums.PesananStatus;
 
-public class DetailPesananDAO {
-    public List<DetailPesanan> getAll() {
-        List<DetailPesanan> detailPesananList = new ArrayList<>();
+public class PesananDAO {
+    public List<Pesanan> getAll() {
+        List<Pesanan> pesananList = new ArrayList<>();
 
         Connection connection = null;
         Statement statement = null;
@@ -18,19 +19,17 @@ public class DetailPesananDAO {
         try {
             connection = Database.getInstance().getConnection();
             statement = connection.createStatement();
-            String sql = "SELECT * FROM detail_pesanan";
+            String sql = "SELECT * FROM pesanan";
             resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
-                int idDetailPesanan = resultSet.getInt("id_detail_pesanan");
-                int idPesanan = resultSet.getInt("id_pesanan");
-                int idLayanan = resultSet.getInt("id_layanan");
-                int kuantitas = resultSet.getInt("kuantitas");
-                double subtotal = resultSet.getDouble("subtotal");
+                int id = resultSet.getInt("id");
+                int idPengguna = resultSet.getInt("id_pengguna");
+                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
+                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
 
-                DetailPesanan detailPesanan = new DetailPesanan(idDetailPesanan, idPesanan, idLayanan, kuantitas,
-                        subtotal);
-                detailPesananList.add(detailPesanan);
+                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
+                pesananList.add(pesanan);
             }
 
         } catch (SQLException e) {
@@ -50,11 +49,11 @@ public class DetailPesananDAO {
             }
         }
 
-        return detailPesananList;
+        return pesananList;
     }
 
-    public DetailPesanan getById(int id) {
-        DetailPesanan detailPesanan = null;
+    public Pesanan getById(int id) {
+        Pesanan pesanan = null;
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -62,18 +61,17 @@ public class DetailPesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM detail_pesanan WHERE id_detail_pesanan = ?";
+            String sql = "SELECT * FROM pesanan WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                int idPesanan = resultSet.getInt("id_pesanan");
-                int idLayanan = resultSet.getInt("id_layanan");
-                int kuantitas = resultSet.getInt("kuantitas");
-                double subtotal = resultSet.getDouble("subtotal");
+                int idPengguna = resultSet.getInt("id_pengguna");
+                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
+                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
 
-                detailPesanan = new DetailPesanan(id, idPesanan, idLayanan, kuantitas, subtotal);
+                pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
             }
 
         } catch (SQLException e) {
@@ -93,34 +91,32 @@ public class DetailPesananDAO {
             }
         }
 
-        return detailPesanan;
+        return pesanan;
     }
 
-    public List<DetailPesanan> getByIdPesanan(int idPesanan) {
-        List<DetailPesanan> detailPesananList = new ArrayList<>();
+    public List<Pesanan> getByIdPengguna(int idPengguna) {
+        List<Pesanan> pesananList = new ArrayList<>();
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
-
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM detail_pesanan WHERE id_pesanan = ?";
+            String sql = "SELECT * FROM pesanan WHERE id_pengguna = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, idPesanan);
-            resultSet = preparedStatement.executeQuery(sql);
+            preparedStatement.setInt(1, idPengguna);
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                int idDetailPesanan = resultSet.getInt("id_detail_pesanan");
-                int idLayanan = resultSet.getInt("id_layanan");
-                int kuantitas = resultSet.getInt("kuantitas");
-                double subtotal = resultSet.getDouble("subtotal");
+                int id = resultSet.getInt("id");
+                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
+                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
 
-                DetailPesanan detailPesanan = new DetailPesanan(idDetailPesanan, idPesanan, idLayanan, kuantitas,
-                        subtotal);
-                detailPesananList.add(detailPesanan);
+                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
+                pesananList.add(pesanan);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
 
@@ -138,23 +134,63 @@ public class DetailPesananDAO {
             }
         }
 
-        return detailPesananList;
+        return pesananList;
     }
 
-    public void create(DetailPesanan detailPesanan) {
+    public List<Pesanan> getByStatus(PesananStatus status) {
+        List<Pesanan> pesananList = new ArrayList<>();
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getInstance().getConnection();
+            String sql = "SELECT * FROM pesanan WHERE status = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, status.toString());
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int idPengguna = resultSet.getInt("id_pengguna");
+                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
+
+                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
+                pesananList.add(pesanan);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (connection != null)
+                    connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return pesananList;
+    }
+
+    public void create(Pesanan pesanan) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "INSERT INTO detail_pesanan (id_pesanan, id_layanan, kuantitas, subtotal) VALUES (?, ?, ?, ?)";
-
+            String sql = "INSERT INTO pesanan (id_pengguna, tanggal_pesanan, status) VALUES (?, ?, ?)";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, detailPesanan.getIdPesanan());
-            preparedStatement.setInt(2, detailPesanan.getIdLayanan());
-            preparedStatement.setInt(3, detailPesanan.getKuantitas());
-            preparedStatement.setDouble(4, detailPesanan.getSubtotal());
-
+            preparedStatement.setInt(1, pesanan.getIdPengguna());
+            preparedStatement.setDate(2, new java.sql.Date(pesanan.getTanggalPesanan().getTime()));
+            preparedStatement.setString(3, pesanan.getStatus().toString());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -173,21 +209,18 @@ public class DetailPesananDAO {
         }
     }
 
-    public void update(DetailPesanan detailPesanan) {
+    public void update(Pesanan pesanan) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "UPDATE detail_pesanan SET id_pesanan = ?, id_layanan = ?, kuantitas = ?, subtotal = ? WHERE id_detail_pesanan = ?";
-
+            String sql = "UPDATE pesanan SET id_pengguna = ?, tanggal_pesanan = ?, status = ? WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, detailPesanan.getIdPesanan());
-            preparedStatement.setInt(2, detailPesanan.getIdLayanan());
-            preparedStatement.setInt(3, detailPesanan.getKuantitas());
-            preparedStatement.setDouble(4, detailPesanan.getSubtotal());
-            preparedStatement.setInt(5, detailPesanan.getId());
-
+            preparedStatement.setInt(1, pesanan.getIdPengguna());
+            preparedStatement.setDate(2, new java.sql.Date(pesanan.getTanggalPesanan().getTime()));
+            preparedStatement.setString(3, pesanan.getStatus().toString());
+            preparedStatement.setInt(4, pesanan.getId());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -212,7 +245,7 @@ public class DetailPesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "DELETE FROM detail_pesanan WHERE id_detail_pesanan = ?";
+            String sql = "DELETE FROM pesanan WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
