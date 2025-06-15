@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import controller.AuthController;
 import enums.UserRole;
+import model.Pengguna;
 import view.dashboard.CustomerDashboard;
 
 import java.awt.*;
@@ -23,6 +24,7 @@ public class RegisterView extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             RegisterView registerView = new RegisterView();
+            registerView.setVisible(true);
         });
     }
 
@@ -172,13 +174,14 @@ public class RegisterView extends JFrame {
         }
     }
 
-    public void showRegisterSuccess(UserRole userRole) {
+    public void showRegisterSuccess(Pengguna activeUser) {
         JOptionPane.showMessageDialog(this, "Registration Successful!");
         this.dispose(); 
 
-        if (userRole == UserRole.CUSTOMER) {
+        if (activeUser.getRole() == UserRole.CUSTOMER) {
             CustomerDashboard cDashboard = new CustomerDashboard();
-            JOptionPane.showMessageDialog(null, "Welcome New Customer!");
+            cDashboard.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Welcome " + activeUser.getUsername() + "!");
 
         } else {
             JOptionPane.showMessageDialog(null, "Unknown role. Please contact support.");

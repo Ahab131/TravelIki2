@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import controller.AuthController; // Import LoginController
 import enums.UserRole;
+import model.Pengguna;
 import view.dashboard.*;
 
 public class LoginView extends JFrame {
@@ -22,6 +23,7 @@ public class LoginView extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             LoginView loginView = new LoginView();
+            loginView.setVisible(true);
         });
     }
 
@@ -190,21 +192,24 @@ public class LoginView extends JFrame {
         frame.setVisible(true);
     }
 
-    public void showLoginSuccess(UserRole userRole) {
+    public void showLoginSuccess(Pengguna activeUser) {
         JOptionPane.showMessageDialog(this, "Login Successful!");
         this.dispose(); // Tutup jendela login
 
         // Tampilkan dashboard sesuai dengan role pengguna
-        if (userRole == UserRole.ADMIN) {
-            AdminDashboard aDashboard = new AdminDashboard();
+        if (activeUser.getRole() == UserRole.ADMIN) {
+            AdminDashboard aDashboard = new AdminDashboard(activeUser);
+            aDashboard.setVisible(true);
             JOptionPane.showMessageDialog(null, "Welcome Admin!");
 
-        } else if (userRole == UserRole.EMPLOYEE) {
-            EmployeeDashboard eDashboard = new EmployeeDashboard();
+        } else if (activeUser.getRole() == UserRole.EMPLOYEE) {
+            EmployeeDashboard eDashboard = new EmployeeDashboard(activeUser);
+            eDashboard.setVisible(true);
             JOptionPane.showMessageDialog(null, "Welcome Employee!");
 
-        } else if (userRole == UserRole.CUSTOMER) {
-            CustomerDashboard cDashboard = new CustomerDashboard();
+        } else if (activeUser.getRole() == UserRole.CUSTOMER) {
+            CustomerDashboard cDashboard = new CustomerDashboard(activeUser);
+            cDashboard.setVisible(true);
             JOptionPane.showMessageDialog(null, "Welcome Customer!");
 
         } else {

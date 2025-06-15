@@ -1,25 +1,19 @@
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JWindow;
+import javax.swing.*;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Image;
+import view.LoginView;
+
+import java.awt.*;
 
 
-import view.Login;
 
 public class App {
     
     public static void main(String[] args) throws Exception {
-        // Ini adalah titik masuk aplikasi
         App app = new App();
         app.showSplashScreen();
         
-        Login login = new Login();
-        login.init(); // Inisialisasi halaman login
+        LoginView login = new LoginView();
+        login.setVisible(true);
         
         app.close();
 

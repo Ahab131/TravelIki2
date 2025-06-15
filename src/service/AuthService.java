@@ -19,7 +19,7 @@ public class AuthService {
     // }
 
     // Logika bisnis untuk autentikasi pengguna
-    public UserRole authenticateUser(String username, String password) {
+    public Pengguna authenticateUser(String username, String password) {
         // Validasi lebih lanjut di Service (misal: format username/password, kebijakan keamanan)
         if (username.length() < 3 || password.length() < 6) {
             // Ini contoh validasi di service, biasanya lebih kompleks
@@ -28,18 +28,18 @@ public class AuthService {
         }
 
         // Panggil DAO untuk mencari pengguna di database
-        Pengguna user = penggunaRepository.getByUsername(username); // Asumsi ada method findByUsername di DAO
+        Pengguna activeUser = penggunaRepository.getByUsername(username); // Asumsi ada method findByUsername di DAO
 
-        if (user != null && user.getPassword().equals(password)) { // Perlu hashing password asli!
+        if (activeUser != null && activeUser.getPassword().equals(password)) { // Perlu hashing password asli!
             // Autentikasi sukses, kembalikan role pengguna
-            return user.getRole();
+            return activeUser;
         } else {
             // Autentikasi gagal
             return null;
         }
     }
 
-    public UserRole registerUser(String username, String password) {
+    public Pengguna registerUser(String username, String password) {
         if (username.length() < 3 || password.length() < 6) {
             System.out.println("Service: Username too short or password too weak.");
             return null; 
@@ -52,8 +52,14 @@ public class AuthService {
 
         String email = "asdasd"; // Jangan Lupa dihapus
 
-        penggunaRepository.create(new Pengguna(0, username, email, password, UserRole.CUSTOMER));
+        Pengguna activeUser = new Pengguna(0, username, email, password, UserRole.CUSTOMER);
+        penggunaRepository.create(activeUser);
 
-        return UserRole.CUSTOMER; 
+        return activeUser; 
+    }
+
+    // for Testing
+    public Pengguna getPengguna() {
+        return penggunaRepository.getByUsername("admin"); // Ganti dengan username yang sesuai untuk testing
     }
 }

@@ -1,6 +1,6 @@
 package controller;
 
-import enums.UserRole;
+import model.Pengguna;
 import service.AuthService;
 import view.LoginView;
 import view.RegisterView; 
@@ -27,10 +27,10 @@ public class AuthController {
             return;
         }
 
-        UserRole userRole = authService.authenticateUser(username, password);
+        Pengguna activeUser = authService.authenticateUser(username, password);
 
-        if (userRole != null) {
-            loginView.showLoginSuccess(userRole);
+        if (activeUser != null) {
+            loginView.showLoginSuccess(activeUser);
         } else {
             loginView.showLoginError("Invalid username or password."); 
         }
@@ -47,10 +47,10 @@ public class AuthController {
             return;
         }
 
-        UserRole userRole = authService.registerUser(username, password); 
+        Pengguna activeUser = authService.registerUser(username, password); 
 
-        if (userRole != null) {
-            registerView.showRegisterSuccess(userRole); 
+        if (activeUser.getRole() != null) {
+            registerView.showRegisterSuccess(activeUser); 
         } else {
             registerView.showRegisterError("Registration failed. Username may already exist.");
         }
