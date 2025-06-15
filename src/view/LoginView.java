@@ -1,9 +1,11 @@
 package view;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
 import javax.swing.*;
+
+import org.w3c.dom.events.MouseEvent;
 
 import controller.LoginController; // Import LoginController
 import enums.UserRole;
@@ -17,36 +19,26 @@ public class LoginView extends JFrame {
     private static JButton btn_show_pass;
     private static JButton btn_login;
 
-    // Tambahkan referensi ke LoginController
     private final LoginController loginController;
 
     public static void main(String[] args) {
-        // Gunakan EventQueue.invokeLater untuk memastikan Swing GUI di-render di Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
             LoginView loginView = new LoginView();
-            // loginView.init();
         });
     }
 
-    // Konstruktor diubah untuk menginisialisasi LoginController
     public LoginView() {
         // Inisialisasi LoginController di sini
-        this.loginController = new LoginController(this); // Mengirim referensi diri (this) ke Controller
-        initializeComponents(); // Panggil method untuk inisialisasi komponen GUI
+        this.loginController = new LoginController(this); 
+        initializeComponents(); 
     }
 
-    public void init() {
-        System.out.println("Initializing Login Page...");
-        // showLogin() sekarang dipanggil dari konstruktor melalui initializeComponents()
-        // Jadi, method init() ini bisa Anda gunakan untuk logika setup lain jika ada.
-    }
-
-    // Method baru untuk menginisialisasi semua komponen GUI
+    // Inisialisasi komponen GUI
     private void initializeComponents() {
         System.out.println("Welcome to Login Page");
 
         // ### FRAME UTAMA
-        frame = this; // 'this' merujuk pada instance Login saat ini
+        frame = this;
         frame.setTitle("Traveliki");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 400);
@@ -82,7 +74,7 @@ public class LoginView extends JFrame {
         lbl_pass.setBounds(490, 185, 120, 10);
         desktopPane.add(lbl_pass);
 
-        tx_pass = new JPasswordField(20); // Pastikan ini tidak dikomentari
+        tx_pass = new JPasswordField(20);
         tx_pass.setBounds(480, 200, 250, 30);
         desktopPane.add(tx_pass);
 
@@ -122,7 +114,6 @@ public class LoginView extends JFrame {
             String username = tx_user.getText();
             String password = new String(tx_pass.getPassword());
 
-            // Panggil method di controller, mendelegasikan tugas login
             loginController.handleLogin(username, password);
         });
 
@@ -137,15 +128,38 @@ public class LoginView extends JFrame {
                 btn_show_pass.setBackground(Color.WHITE);
             }
         });
+        
+        // Register Here
+        click_here.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                showRegister();
+            }
+        });
+        
+        click_here.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                click_here.setForeground(new Color(13, 108, 176).darker());
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                click_here.setForeground(new Color(13, 108, 176));
+            }
+        });
+        
+        click_here.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                click_here.setForeground(Color.WHITE);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                click_here.setForeground(new Color(13, 108, 176).darker());
+            }
+        });
     }
 
-    // Method yang dipanggil oleh Controller untuk menampilkan pesan sukses/gagal login
     public void showLoginSuccess(UserRole userRole) {
         JOptionPane.showMessageDialog(this, "Login Successful!");
         this.dispose(); // Tutup jendela login
 
-        // Logika untuk menampilkan dashboard sesuai role
-        // Pastikan kelas dashboard memiliki constructor yang bisa dipanggil tanpa static
+        // Tampilkan dashboard sesuai dengan role pengguna
         if (userRole == UserRole.ADMIN) {
             AdminDashboard aDashboard = new AdminDashboard();
             JOptionPane.showMessageDialog(null, "Welcome Admin!");
@@ -167,13 +181,11 @@ public class LoginView extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
     }
 
-    // Method untuk menampilkan halaman register (tetap di View)
     private void showRegister() {
         System.out.println("Welcome to Register Page");
         // Implementasi lebih lanjut untuk halaman register
     }
 
-    // Method untuk menempatkan frame di tengah layar (tetap di View, karena ini utilitas tampilan)
     private void centerFrameOnScreen(JFrame frame) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
