@@ -1,0 +1,6 @@
+projectKey=TRAVELIKI
+serverUrl=http://localhost:9000
+serverVersion=25.6.0.109173
+dashboardUrl=http://localhost:9000/dashboard?id=TRAVELIKI
+ceTaskId=b0bf77e5-6faf-4bf1-9ff0-8de294826f44
+ceTaskUrl=http://localhost:9000/api/ce/task?id=b0bf77e5-6faf-4bf1-9ff0-8de294826f44
