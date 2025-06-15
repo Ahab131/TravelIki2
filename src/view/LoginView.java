@@ -5,9 +5,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import org.w3c.dom.events.MouseEvent;
-
-import controller.LoginController; // Import LoginController
+import controller.AuthController; // Import LoginController
 import enums.UserRole;
 import view.dashboard.*;
 
@@ -19,7 +17,7 @@ public class LoginView extends JFrame {
     private static JButton btn_show_pass;
     private static JButton btn_login;
 
-    private final LoginController loginController;
+    private final AuthController authController;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -29,7 +27,7 @@ public class LoginView extends JFrame {
 
     public LoginView() {
         // Inisialisasi LoginController di sini
-        this.loginController = new LoginController(this); 
+        this.authController = new AuthController(this); 
         initializeComponents(); 
     }
 
@@ -39,8 +37,8 @@ public class LoginView extends JFrame {
 
         // ### FRAME UTAMA
         frame = this;
-        frame.setTitle("Traveliki");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Traveliki - Login");
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setSize(800, 400);
         frame.setResizable(false);
 
@@ -53,9 +51,6 @@ public class LoginView extends JFrame {
         JLabel backgroundLabel = new JLabel(new ImageIcon(image));
         backgroundLabel.setBounds(0, 0, 800, 400);
         desktopPane.add(backgroundLabel, Integer.valueOf(Integer.MIN_VALUE));
-
-        centerFrameOnScreen(frame);
-        frame.setVisible(true);
 
         // ### KOMPONEN GUI
         JLabel lbl_user = new JLabel("Username:");
@@ -114,9 +109,10 @@ public class LoginView extends JFrame {
             String username = tx_user.getText();
             String password = new String(tx_pass.getPassword());
 
-            loginController.handleLogin(username, password);
+            authController.handleLogin(username, password);
         });
 
+        
         btn_show_pass.addActionListener((ActionEvent e) -> {
             if (tx_pass.getEchoChar() == '\u2022') {
                 tx_pass.setEchoChar((char) 0);
@@ -128,8 +124,31 @@ public class LoginView extends JFrame {
                 btn_show_pass.setBackground(Color.WHITE);
             }
         });
-        
-        // Register Here
+
+        // ### KEY LISTENER
+        tx_user.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    tx_pass.requestFocus(); // Pindahkan fokus ke field password
+                }
+            }
+        });
+
+        tx_pass.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String username = tx_user.getText();
+                    String password = new String(tx_pass.getPassword());
+
+                    authController.handleLogin(username, password); // Panggil method login);
+                }
+            }
+        });
+
+
+        // ### MOUSE LISTENER
         click_here.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 showRegister();
@@ -153,6 +172,22 @@ public class LoginView extends JFrame {
                 click_here.setForeground(new Color(13, 108, 176).darker());
             }
         });
+
+        // ### WINDOW LISTENER
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?",
+                        "Exit Confirmation", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        });
+
+        // ### CENTER FRAME
+        centerFrameOnScreen(frame);
+        frame.setVisible(true);
     }
 
     public void showLoginSuccess(UserRole userRole) {
@@ -182,8 +217,10 @@ public class LoginView extends JFrame {
     }
 
     private void showRegister() {
-        System.out.println("Welcome to Register Page");
-        // Implementasi lebih lanjut untuk halaman register
+        frame.dispose();
+
+        RegisterView registerView = new RegisterView();
+        registerView.setVisible(true);
     }
 
     private void centerFrameOnScreen(JFrame frame) {

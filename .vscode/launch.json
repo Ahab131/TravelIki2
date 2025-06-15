@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RegisterView",
+            "request": "launch",
+            "mainClass": "view.RegisterView",
+            "projectName": "TravelIki2_b2d09e2e"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

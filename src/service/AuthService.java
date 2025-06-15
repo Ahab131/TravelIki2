@@ -38,4 +38,22 @@ public class AuthService {
             return null;
         }
     }
+
+    public UserRole registerUser(String username, String password) {
+        if (username.length() < 3 || password.length() < 6) {
+            System.out.println("Service: Username too short or password too weak.");
+            return null; 
+        }
+
+        if (penggunaRepository.getByUsername(username) != null) {
+            System.out.println("Service: Username already exists.");
+            return null; 
+        }
+
+        String email = "asdasd"; // Jangan Lupa dihapus
+
+        penggunaRepository.create(new Pengguna(0, username, email, password, UserRole.CUSTOMER));
+
+        return UserRole.CUSTOMER; 
+    }
 }
