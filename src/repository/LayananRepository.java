@@ -9,7 +9,7 @@ import model.Layanan;
 import config.Database;
 import enums.LayananStatus;
 
-public class LayananDAO {
+public class LayananRepository {
     public List<Layanan> getAll() {
         List<Layanan> layananList = new ArrayList<>();
 

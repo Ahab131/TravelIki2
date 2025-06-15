@@ -4,13 +4,13 @@ import java.util.List;
 import java.sql.Date;
 
 import model.Pesanan;
-import repository.PesananDAO;
+import repository.PesananRepository;
 import enums.PesananStatus;
 
 public class PesananService {
-    private final PesananDAO pesananDAO;
+    private final PesananRepository pesananDAO;
 
-    public PesananService(PesananDAO pesananDAO) {
+    public PesananService(PesananRepository pesananDAO) {
         this.pesananDAO = pesananDAO;
     }
 

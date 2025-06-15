@@ -3,14 +3,14 @@ package service;
 import java.util.List;
 
 import model.Layanan;
-import repository.LayananDAO;
+import repository.LayananRepository;
 import enums.LayananStatus;
 
 public class LayananService {
-    private final LayananDAO layananDAO;
+    private final LayananRepository layananDAO;
     private final KategoriService kategoriService;
 
-    public LayananService(LayananDAO layananDAO, KategoriService kategoriService) {
+    public LayananService(LayananRepository layananDAO, KategoriService kategoriService) {
         this.layananDAO = layananDAO;
         this.kategoriService = kategoriService;
     }

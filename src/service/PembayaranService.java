@@ -5,15 +5,15 @@ import java.sql.Date;
 
 import model.DetailPesanan;
 import model.Pembayaran;
-import repository.PembayaranDAO;
+import repository.PembayaranRepository;
 import enums.PembayaranStatus;
 // import service.DetailPesananService;
 
 public class PembayaranService {
     private DetailPesananService detailPesananService;
-    private final PembayaranDAO pembayaranDAO;
+    private final PembayaranRepository pembayaranDAO;
 
-    public PembayaranService(PembayaranDAO pembayaranDAO) {
+    public PembayaranService(PembayaranRepository pembayaranDAO) {
         this.pembayaranDAO = pembayaranDAO;
     }
 

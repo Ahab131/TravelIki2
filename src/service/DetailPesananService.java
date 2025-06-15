@@ -3,13 +3,13 @@ package service;
 import java.util.List;
 
 import model.DetailPesanan;
-import repository.DetailPesananDAO;
+import repository.DetailPesananRepository;
 
 public class DetailPesananService {
     private LayananService layananService;
-    private final DetailPesananDAO detailPesananDAO;
+    private final DetailPesananRepository detailPesananDAO;
 
-    public DetailPesananService(DetailPesananDAO detailPesananDAO) {
+    public DetailPesananService(DetailPesananRepository detailPesananDAO) {
         this.detailPesananDAO = detailPesananDAO;
     }
 

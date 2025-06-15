@@ -7,7 +7,7 @@ import java.sql.*;
 import model.DetailPesanan;
 import config.Database;
 
-public class DetailPesananDAO {
+public class DetailPesananRepository {
     public List<DetailPesanan> getAll() {
         List<DetailPesanan> detailPesananList = new ArrayList<>();
 

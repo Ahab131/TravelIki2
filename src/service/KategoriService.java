@@ -3,12 +3,12 @@ package service;
 import java.util.List;
 
 import model.Kategori;
-import repository.KategoriDAO;
+import repository.KategoriRepository;
 
 public class KategoriService {
-    private final KategoriDAO kategoriDAO;
+    private final KategoriRepository kategoriDAO;
 
-    public KategoriService(KategoriDAO kategoriDAO) {
+    public KategoriService(KategoriRepository kategoriDAO) {
         this.kategoriDAO = kategoriDAO;
     }
 

@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 
-import model.Pesanan;
+import model.Pembayaran;
 import config.Database;
-import enums.PesananStatus;
+import enums.PembayaranStatus;
 
-public class PesananDAO {
-    public List<Pesanan> getAll() {
-        List<Pesanan> pesananList = new ArrayList<>();
+public class PembayaranRepository {
+    public List<Pembayaran> getAll() {
+        List<Pembayaran> pembayaranList = new ArrayList<>();
 
         Connection connection = null;
         Statement statement = null;
@@ -19,17 +19,19 @@ public class PesananDAO {
         try {
             connection = Database.getInstance().getConnection();
             statement = connection.createStatement();
-            String sql = "SELECT * FROM pesanan";
+            String sql = "SELECT * FROM pembayaran";
             resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int idPengguna = resultSet.getInt("id_pengguna");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
+                int idPesanan = resultSet.getInt("id_pesanan");
+                double total = resultSet.getDouble("total");
+                double bayar = resultSet.getDouble("bayar");
+                Date tanggalPembayaran = resultSet.getDate("tanggal_pembayaran");
+                PembayaranStatus status = PembayaranStatus.valueOf(resultSet.getString("status"));
 
-                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
-                pesananList.add(pesanan);
+                Pembayaran pembayaran = new Pembayaran(id, idPesanan, total, bayar, tanggalPembayaran, status);
+                pembayaranList.add(pembayaran);
             }
 
         } catch (SQLException e) {
@@ -49,11 +51,11 @@ public class PesananDAO {
             }
         }
 
-        return pesananList;
+        return pembayaranList;
     }
 
-    public Pesanan getById(int id) {
-        Pesanan pesanan = null;
+    public Pembayaran getById(int id) {
+        Pembayaran pembayaran = null;
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -61,17 +63,19 @@ public class PesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pesanan WHERE id = ?";
+            String sql = "SELECT * FROM pembayaran WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                int idPengguna = resultSet.getInt("id_pengguna");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
+                int idPesanan = resultSet.getInt("id_pesanan");
+                double total = resultSet.getDouble("total");
+                double bayar = resultSet.getDouble("bayar");
+                Date tanggalPembayaran = resultSet.getDate("tanggal_pembayaran");
+                PembayaranStatus status = PembayaranStatus.valueOf(resultSet.getString("status"));
 
-                pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
+                pembayaran = new Pembayaran(id, idPesanan, total, bayar, tanggalPembayaran, status);
             }
 
         } catch (SQLException e) {
@@ -91,11 +95,11 @@ public class PesananDAO {
             }
         }
 
-        return pesanan;
+        return pembayaran;
     }
 
-    public List<Pesanan> getByIdPengguna(int idPengguna) {
-        List<Pesanan> pesananList = new ArrayList<>();
+    public List<Pembayaran> getByStatus(PembayaranStatus status) {
+        List<Pembayaran> pembayaranList = new ArrayList<>();
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -103,61 +107,20 @@ public class PesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pesanan WHERE id_pengguna = ?";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, idPengguna);
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
-                PesananStatus status = PesananStatus.valueOf(resultSet.getString("status"));
-
-                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
-                pesananList.add(pesanan);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } finally {
-            try {
-                if (resultSet != null)
-                    resultSet.close();
-                if (preparedStatement != null)
-                    preparedStatement.close();
-                if (connection != null)
-                    connection.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return pesananList;
-    }
-
-    public List<Pesanan> getByStatus(PesananStatus status) {
-        List<Pesanan> pesananList = new ArrayList<>();
-
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = Database.getInstance().getConnection();
-            String sql = "SELECT * FROM pesanan WHERE status = ?";
+            String sql = "SELECT * FROM pembayaran WHERE status = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, status.toString());
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int idPengguna = resultSet.getInt("id_pengguna");
-                Date tanggalPesanan = resultSet.getDate("tanggal_pesanan");
+                int idPesanan = resultSet.getInt("id_pesanan");
+                double total = resultSet.getDouble("total");
+                double bayar = resultSet.getDouble("bayar");
+                Date tanggalPembayaran = resultSet.getDate("tanggal_pembayaran");
 
-                Pesanan pesanan = new Pesanan(id, idPengguna, tanggalPesanan, status);
-                pesananList.add(pesanan);
+                Pembayaran pembayaran = new Pembayaran(id, idPesanan, total, bayar, tanggalPembayaran, status);
+                pembayaranList.add(pembayaran);
             }
 
         } catch (SQLException e) {
@@ -177,20 +140,66 @@ public class PesananDAO {
             }
         }
 
-        return pesananList;
+        return pembayaranList;
     }
 
-    public void create(Pesanan pesanan) {
+    public Pembayaran getByIdPesanan(int idPesanan) {
+        Pembayaran pembayaran = null;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getInstance().getConnection();
+            String sql = "SELECT * FROM pembayaran WHERE id_pesanan = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, idPesanan);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                double total = resultSet.getDouble("total");
+                double bayar = resultSet.getDouble("bayar");
+                Date tanggalPembayaran = resultSet.getDate("tanggal_pembayaran");
+                PembayaranStatus status = PembayaranStatus.valueOf(resultSet.getString("status"));
+
+                pembayaran = new Pembayaran(id, idPesanan, total, bayar, tanggalPembayaran, status);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (connection != null)
+                    connection.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return pembayaran;
+    }
+
+    public void create(Pembayaran pembayaran) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "INSERT INTO pesanan (id_pengguna, tanggal_pesanan, status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO pembayaran (id_pesanan, total, bayar, tanggal_pembayaran, status) VALUES (?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, pesanan.getIdPengguna());
-            preparedStatement.setDate(2, new java.sql.Date(pesanan.getTanggalPesanan().getTime()));
-            preparedStatement.setString(3, pesanan.getStatus().toString());
+            preparedStatement.setInt(1, pembayaran.getIdPesanan());
+            preparedStatement.setDouble(2, pembayaran.getTotal());
+            preparedStatement.setDouble(3, pembayaran.getBayar());
+            preparedStatement.setDate(4, pembayaran.getTanggalPembayaran());
+            preparedStatement.setString(5, pembayaran.getStatus().toString());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -209,18 +218,20 @@ public class PesananDAO {
         }
     }
 
-    public void update(Pesanan pesanan) {
+    public void update(Pembayaran pembayaran) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-
+        
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "UPDATE pesanan SET id_pengguna = ?, tanggal_pesanan = ?, status = ? WHERE id = ?";
+            String sql = "UPDATE pembayaran SET id_pesanan = ?, total = ?, bayar = ?, tanggal_pembayaran = ?, status = ? WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, pesanan.getIdPengguna());
-            preparedStatement.setDate(2, new java.sql.Date(pesanan.getTanggalPesanan().getTime()));
-            preparedStatement.setString(3, pesanan.getStatus().toString());
-            preparedStatement.setInt(4, pesanan.getId());
+            preparedStatement.setInt(1, pembayaran.getIdPesanan());
+            preparedStatement.setDouble(2, pembayaran.getTotal());
+            preparedStatement.setDouble(3, pembayaran.getBayar());
+            preparedStatement.setDate(4, pembayaran.getTanggalPembayaran());
+            preparedStatement.setString(5, pembayaran.getStatus().toString());
+            preparedStatement.setInt(6, pembayaran.getId());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -245,7 +256,7 @@ public class PesananDAO {
 
         try {
             connection = Database.getInstance().getConnection();
-            String sql = "DELETE FROM pesanan WHERE id = ?";
+            String sql = "DELETE FROM pembayaran WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
